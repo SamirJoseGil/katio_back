@@ -51,7 +51,7 @@ async void PopulateDB(WebApplication app)
         await AuthorService.CreateAuthor(new katio.Data.Models.Author
         {
             Name = "Gabriel",
-            LastName = "Garc�a M�rquez",
+            LastName = "García Márquez",
             Country = "Colombia",
             BirthDate = new DateOnly(1940, 03, 03)
         });
@@ -66,7 +66,7 @@ async void PopulateDB(WebApplication app)
 
         await AuthorService.CreateAuthor(new katio.Data.Models.Author
         {
-            Name = "Germ�n",
+            Name = "Germán",
             LastName = "Castro-Caycedo",
             Country = "Colombia",
             BirthDate = new DateOnly(1940, 03, 03)
@@ -75,8 +75,8 @@ async void PopulateDB(WebApplication app)
         await AuthorService.CreateAuthor(new katio.Data.Models.Author
         {
             Name = "Silvia",
-            LastName = "Moreno Garc�a",
-            Country = "M�xico",
+            LastName = "Moreno García",
+            Country = "México",
             BirthDate = new DateOnly(1981, 04, 25)
         });
 
@@ -84,7 +84,7 @@ async void PopulateDB(WebApplication app)
         {
             Name = "Irene",
             LastName = "Vallejo",
-            Country = "Espa�a",
+            Country = "España",
             BirthDate = new DateOnly(1979, 06, 06)
         });
 
@@ -274,7 +274,7 @@ async void PopulateDB(WebApplication app)
         {
             Name = "Margaret",
             LastName = "Atwood",
-            Country = "Canad�",
+            Country = "Canadá",
             BirthDate = new DateOnly(1939, 11, 18)
         });
 
@@ -306,11 +306,11 @@ async void PopulateDB(WebApplication app)
         var bookService = scope.ServiceProvider.GetRequiredService<IBookService>();
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "Cien a�os de soledad",
+            Name = "Cien años de soledad",
             ISBN10 = "8420471836",
             ISBN13 = "978-8420471839",
             Published = new DateOnly(1967, 06, 05),
-            Edition = "RAE Obra Acad�mica",
+            Edition = "RAE Obra Académica",
             DeweyIndex = "800",
             AuthorId = 1
         });
@@ -328,11 +328,11 @@ async void PopulateDB(WebApplication app)
 
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "Mar�a",
+            Name = "María",
             ISBN10 = "14802722922",
             ISBN13 = "978-148027292",
             Published = new DateOnly(1867, 01, 01),
-            Edition = "1ra edici�n",
+            Edition = "1ra edición",
             DeweyIndex = "800",
             AuthorId = 2
         });
@@ -393,7 +393,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "El pa�s de la canela",
+            Name = "El país de la canela",
             ISBN10 = "8439738831",
             ISBN13 = "978-8439738831",
             Published = new DateOnly(2020, 08, 22),
@@ -423,7 +423,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "El s�ndrome de Ulises",
+            Name = "El síndrome de Ulises",
             ISBN10 = "9584211903",
             ISBN13 = "978-9584211903",
             Published = new DateOnly(2005, 03, 30),
@@ -444,7 +444,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "Memorias de un sinverg�enza de siete suelas",
+            Name = "Memorias de un sinvergüenza de siete suelas",
             ISBN10 = "9504932611",
             ISBN13 = "978-9504932611",
             Published = new DateOnly(2012, 01, 01),
@@ -454,7 +454,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "Satan�s",
+            Name = "Satanás",
             ISBN10 = "9584273543",
             ISBN13 = "978-9584273543",
             Published = new DateOnly(2018, 01, 01),
@@ -515,7 +515,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "Anniquilaci�n",
+            Name = "Anniquilación",
             ISBN10 = "0374104092",
             ISBN13 = "978-0374104092",
             Published = new DateOnly(2014, 02, 04),
@@ -535,7 +535,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "Aceptaci�n",
+            Name = "Aceptación",
             ISBN10 = "374104115",
             ISBN13 = "978-0374104115",
             Published = new DateOnly(2014, 09, 02),
@@ -549,7 +549,7 @@ async void PopulateDB(WebApplication app)
             ISBN10 = "9584268754",
             ISBN13 = "978-9584268754",
             Published = new DateOnly(2019, 01, 01),
-            Edition = "Cr�tica",
+            Edition = "Crítica",
             DeweyIndex = "800",
             AuthorId = 12
         });
@@ -615,7 +615,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "Trilog�a Fundaci�n",
+            Name = "Trilogía Fundación",
             ISBN10 = "8499083209",
             ISBN13 = "978-8499083209",
             Published = new DateOnly(2023, 03, 23),
@@ -635,7 +635,7 @@ async void PopulateDB(WebApplication app)
         });
         await bookService.CreateBook(new katio.Data.Models.Book
         {
-            Name = "El se�or de los anillos",
+            Name = "El señor de los anillos",
             ISBN10 = "8445013830",
             ISBN13 = "978-8445013830",
             Published = new DateOnly(2023, 11, 02),
@@ -769,14 +769,14 @@ async void PopulateDB(WebApplication app)
         await AudioBookService.CreateAudioBook(new katio.Data.Models.AudioBook
         {
             Id = 1,
-            Name = "Cien a�os de soledad",
+            Name = "Cien años de soledad",
             ISBN10 = "8420471836",
             ISBN13 = "978-8420471839",
             Published = new DateOnly(1967, 06, 05),
-            Edition = "RAE Obra Acad�mica",
+            Edition = "RAE Obra Académica",
             Genre = "Ficcion",
             LenghtInSeconds = 1,
-            Path = "C:/Users/Usuario/Downloads/Cien a�os de soledad.mp3",
+            Path = "C:/Users/Usuario/Downloads/Cien años de soledad.mp3",
             AuthorId = 1
         });
         await AudioBookService.CreateAudioBook(new katio.Data.Models.AudioBook
@@ -795,11 +795,11 @@ async void PopulateDB(WebApplication app)
         await AudioBookService.CreateAudioBook(new katio.Data.Models.AudioBook
         {
             Id = 3,
-            Name = "Mar�a",
+            Name = "María",
             ISBN10 = "14802722922",
             ISBN13 = "978-148027292",
             Published = new DateOnly(1867, 01, 01),
-            Edition = "1ra edici�n",
+            Edition = "1ra edición",
             Genre = "Ficcion",
             LenghtInSeconds = 20,
             Path = "C:/Users/Usuario/Downloads/Maria.mp3",
