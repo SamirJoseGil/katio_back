@@ -84,6 +84,8 @@ public class AuthorService : IAuthorService
         try 
         {
             await _unitOfWork.AuthorRepository.Update(result);
+            await _unitOfWork.SaveAsync();
+            
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
