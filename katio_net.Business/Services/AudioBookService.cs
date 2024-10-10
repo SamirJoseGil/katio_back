@@ -38,7 +38,7 @@ public class AudioBookService : IAudioBookService
     {
         var existingAudioBook = await _unitOfWork.AudioBookRepository.GetAllAsync(ab => ab.ISBN10 == audioBook.ISBN10 || ab.ISBN13 == audioBook.ISBN13);
 
-        if (existingAudioBook != null)
+        if (existingAudioBook.Any())
         {
             return Utilities.BuildResponse<AudioBook>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} |  Ya hay un audiolibro registrado con el mismo ISBN.");
         }
@@ -58,6 +58,8 @@ public class AudioBookService : IAudioBookService
         try
         {
             await _unitOfWork.AudioBookRepository.AddAsync(newAudioBook);
+            await _unitOfWork.SaveAsync();
+
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<AudioBook>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
@@ -87,6 +89,8 @@ public class AudioBookService : IAudioBookService
         try 
         {
             await _unitOfWork.AudioBookRepository.Update(result);
+            await _unitOfWork.SaveAsync();
+            
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<AudioBook>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");

@@ -38,7 +38,7 @@ public class BookService : IBookService
     {
         var existingBook = await _unitOfWork.BookRepository.GetAllAsync(b => b.ISBN10 == book.ISBN10 || b.ISBN13 == book.ISBN13);
 
-        if (existingBook != null)
+        if (existingBook.Any())
         {
            
             return Utilities.BuildResponse<Book>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} | Ya hay un libro registrado con el mismo ISBN.");
@@ -56,6 +56,8 @@ public class BookService : IBookService
         try
         {
             await _unitOfWork.BookRepository.AddAsync(newBook);
+            await _unitOfWork.SaveAsync();
+
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Book>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
@@ -81,6 +83,8 @@ public class BookService : IBookService
         try 
         {
             await _unitOfWork.BookRepository.Update(result);
+            await _unitOfWork.SaveAsync();
+            
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Book>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
