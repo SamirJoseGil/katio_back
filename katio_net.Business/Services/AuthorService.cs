@@ -10,7 +10,7 @@ namespace katio.Business.Services;
 public class AuthorService : IAuthorService
 {
     // Lista de autores
-    private readonly KatioContext _context;
+
     private readonly IUnitOfWork _unitOfWork;
 
     // Constructor
@@ -42,10 +42,11 @@ public class AuthorService : IAuthorService
     {
         var existingAuthor = await _unitOfWork.AuthorRepository.GetAllAsync(a => a.Name == author.Name && a.LastName == author.LastName);
 
-        if (existingAuthor != null)
+        if (existingAuthor.Any())
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} | El autor ya está registrado en el sistema.");
         }
+
         var newAuthor = new Author()
         {
             Name = author.Name,
@@ -53,13 +54,17 @@ public class AuthorService : IAuthorService
             Country = author.Country,
             BirthDate = author.BirthDate
         };
+
         try
         {
             await _unitOfWork.AuthorRepository.AddAsync(newAuthor);
-        } catch (Exception ex)
+            await _unitOfWork.SaveAsync();
+        } 
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
+
         return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { newAuthor });
     }
 
@@ -79,6 +84,8 @@ public class AuthorService : IAuthorService
         try 
         {
             await _unitOfWork.AuthorRepository.Update(result);
+            await _unitOfWork.SaveAsync();
+            
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
@@ -97,6 +104,7 @@ public class AuthorService : IAuthorService
         try
         {
             await _unitOfWork.AuthorRepository.Delete(result);
+
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");

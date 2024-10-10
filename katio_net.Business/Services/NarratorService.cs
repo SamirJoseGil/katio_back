@@ -41,7 +41,7 @@ public class NarratorService : INarratorService
     {
         var existingNarrator = await _unitOfWork.NarratorRepository.GetAllAsync(n => n.Name == narrator.Name && n.LastName == narrator.LastName);
 
-        if (existingNarrator != null)
+        if (existingNarrator.Any())
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} | El narrador ya está registrado en el sistema.");
         }
@@ -54,6 +54,8 @@ public class NarratorService : INarratorService
         try
         {
             await _unitOfWork.NarratorRepository.AddAsync(newNarrator);
+            await _unitOfWork.SaveAsync();
+
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
@@ -78,6 +80,8 @@ public class NarratorService : INarratorService
         try 
         {
             await _unitOfWork.NarratorRepository.AddAsync(result);
+            await _unitOfWork.SaveAsync();
+
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
@@ -95,6 +99,7 @@ public class NarratorService : INarratorService
         try
         {
             await _unitOfWork.NarratorRepository.Delete(result);
+            
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");

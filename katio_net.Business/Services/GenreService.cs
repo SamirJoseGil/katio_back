@@ -39,7 +39,7 @@ public class GenreService : IGenreService
     {
         var existingGenre = await _unitOfWork.GenreRepository.GetAllAsync(g => g.Name == genre.Name);
 
-        if (existingGenre != null)
+        if (existingGenre.Any())
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} | El género ya está registrado en el sistema.");
         }
@@ -74,6 +74,8 @@ public class GenreService : IGenreService
         try
         {
             await _unitOfWork.GenreRepository.Update(result);
+            await _unitOfWork.SaveAsync();
+            
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
