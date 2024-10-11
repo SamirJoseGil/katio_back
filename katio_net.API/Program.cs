@@ -777,7 +777,7 @@ async void PopulateDB(WebApplication app)
             Genre = "Ficcion",
             LenghtInSeconds = 1,
             Path = "C:/Users/Usuario/Downloads/Cien años de soledad.mp3",
-            AuthorId = 1
+            NarratorId = 1
         });
         await AudioBookService.CreateAudioBook(new katio.Data.Models.AudioBook
         {
@@ -790,7 +790,7 @@ async void PopulateDB(WebApplication app)
             Genre = "Ficcion",
             LenghtInSeconds = 10,
             Path = "C:/Users/Usuario/Downloads/Huellas.mp3",
-            AuthorId = 3
+            NarratorId = 3
         });
         await AudioBookService.CreateAudioBook(new katio.Data.Models.AudioBook
         {
@@ -803,7 +803,7 @@ async void PopulateDB(WebApplication app)
             Genre = "Ficcion",
             LenghtInSeconds = 20,
             Path = "C:/Users/Usuario/Downloads/Maria.mp3",
-            AuthorId = 2
+            NarratorId = 2
         });
         await AudioBookService.CreateAudioBook(new katio.Data.Models.AudioBook
         {
@@ -816,7 +816,7 @@ async void PopulateDB(WebApplication app)
             Genre = "Ficcion",
             LenghtInSeconds = 30,
             Path = "C:/Users/Usuario/Downloads/Mexico Gothic.mp3",
-            AuthorId = 4
+            NarratorId = 4
         });
 
         #endregion
