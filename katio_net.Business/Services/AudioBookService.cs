@@ -53,7 +53,7 @@ public class AudioBookService : IAudioBookService
             Genre = audioBook.Genre,
             LenghtInSeconds = audioBook.LenghtInSeconds,
             Path = audioBook.Path,
-            AuthorId = audioBook.AuthorId
+            NarratorId = audioBook.NarratorId
         };
         try
         {
@@ -84,7 +84,7 @@ public class AudioBookService : IAudioBookService
         result.Genre = audioBook.Genre;
         result.LenghtInSeconds = audioBook.LenghtInSeconds;
         result.Path = audioBook.Path;
-        result.AuthorId = audioBook.AuthorId;
+        result.NarratorId = audioBook.NarratorId;
        
         try 
         {
@@ -238,14 +238,14 @@ public class AudioBookService : IAudioBookService
 
     #endregion
 
-    #region Find By Author
+    #region Find By Narrator
 
-    // Buscar por Autor
-    public async Task<BaseMessage<AudioBook>> GetAudioBookByAuthor(int authorId)
+    // Buscar por Narrador
+    public async Task<BaseMessage<AudioBook>> GetAudioBookByNarrator(int narratorId)
     {
         try 
         {
-            var result = await _unitOfWork.AudioBookRepository.FindAsync(authorId);
+            var result = await _unitOfWork.AudioBookRepository.FindAsync(narratorId);
             return (result != null)
                 ? Utilities.BuildResponse<AudioBook>(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<AudioBook> { result })
                 : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUDIOBOOK_NOT_FOUND, new List<AudioBook>());
@@ -256,13 +256,13 @@ public class AudioBookService : IAudioBookService
     }
 
 
-    // Buscar por Nombre de Autor
-    public async Task<BaseMessage<AudioBook>> GetAudioBookByAuthorName(string authorName)
+    // Buscar por Nombre de Narrador
+    public async Task<BaseMessage<AudioBook>> GetAudioBookByNarratorName(string narratorName)
     {
         try
         {
-            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(a => a.Author.Name.ToLower().Contains(authorName.ToLower()),
-            includeProperties: "Author");
+            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(a => a.Narrator.Name.ToLower().Contains(narratorName.ToLower()),
+            includeProperties: "Narrator");
             return result.Any()
                 ? Utilities.BuildResponse<AudioBook>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result)
                 : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUDIOBOOK_NOT_FOUND, new List<AudioBook>());
@@ -272,13 +272,13 @@ public class AudioBookService : IAudioBookService
         }
     }
 
-    // Buscar por Apellido del Autor
-    public async Task<BaseMessage<AudioBook>> GetAudioBookByAuthorLastName(string authorLastName)
+    // Buscar por Apellido del Narrador
+    public async Task<BaseMessage<AudioBook>> GetAudioBookByNarratorLastName(string narratorLastName)
     {
         try
         {
-            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(b => b.Author.LastName.ToLower().Contains(authorLastName.ToLower()),
-            includeProperties: "Author");
+            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(b => b.Narrator.LastName.ToLower().Contains(narratorLastName.ToLower()),
+            includeProperties: "Narrator");
             return result.Any()
                 ? Utilities.BuildResponse<AudioBook>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result)
                 : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUDIOBOOK_NOT_FOUND, new List<AudioBook>());
@@ -287,14 +287,14 @@ public class AudioBookService : IAudioBookService
         }
     }
 
-    // Buscar por Nombre y Apellido de Autor
-    public async Task<BaseMessage<AudioBook>> GetAudioBookByAuthorFullName(string authorName, string authorLastName)
+    // Buscar por Nombre y Apellido de Narrador
+    public async Task<BaseMessage<AudioBook>> GetAudioBookByNarratorFullName(string narratorName, string narratorLastName)
     {
         try
         {
-            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(a => a.Author.Name.ToLower().Contains(authorName.ToLower()) &&
-            a.Author.LastName.ToLower().Contains(authorLastName.ToLower()), 
-            includeProperties: "Author");
+            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(a => a.Narrator.Name.ToLower().Contains(narratorName.ToLower()) &&
+            a.Narrator.LastName.ToLower().Contains(narratorLastName.ToLower()), 
+            includeProperties: "Narrator");
             return result.Any()
                 ? Utilities.BuildResponse<AudioBook>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result)
                 : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUDIOBOOK_NOT_FOUND, new List<AudioBook>());
@@ -305,30 +305,13 @@ public class AudioBookService : IAudioBookService
     }
 
 
-    // Buscar por País de Autor
-    public async Task<BaseMessage<AudioBook>> GetAudioBookByAuthorCountry(string authorCountry)
+    public async Task<BaseMessage<AudioBook>> GetAudioBookByNarratorGenre(string genre)
     {
         try
         {
-            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(a => a.Author.Country.ToLower().Contains(authorCountry.ToLower()), 
-            includeProperties: "Author");
-            return result.Any()
-                ? Utilities.BuildResponse<AudioBook>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result)
-                : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUDIOBOOK_NOT_FOUND, new List<AudioBook>());
-        } catch (Exception ex)
-        {
-            return Utilities.BuildResponse<AudioBook>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
-        }
-    }
-
-    // Buscar por Rango de Fecha de Nacimiento de Autor
-    public async Task<BaseMessage<AudioBook>> GetAudioBookByAuthorBirthDateRange(DateOnly startDate, DateOnly endDate)
-    {
-        try
-        {
-            var result = await _unitOfWork.AudioBookRepository.GetAllAsync(b => b.Author.BirthDate >= startDate && b.Author.BirthDate <= endDate,
-            includeProperties: "Author");
-            return result.Any()
+        var result = await _unitOfWork.AudioBookRepository.GetAllAsync(a => a.Narrator.Genre.ToLower().Contains(genre.ToLower()),
+        includeProperties: "Narrator");
+        return result.Any()
                 ? Utilities.BuildResponse<AudioBook>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result)
                 : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUDIOBOOK_NOT_FOUND, new List<AudioBook>());
         } catch (Exception ex)

@@ -18,10 +18,9 @@ public interface IAudioBookService
     Task<BaseMessage<AudioBook>> GetByAudioBookGenre(string genre);
     Task<BaseMessage<AudioBook>> GetByAudioBookLenghtInSeconds(int lenghtInSeconds);
 
-    Task<BaseMessage<AudioBook>> GetAudioBookByAuthor(int authorId);
-    Task<BaseMessage<AudioBook>> GetAudioBookByAuthorName(string authorName);
-    Task<BaseMessage<AudioBook>> GetAudioBookByAuthorLastName(string authorCountry);
-    Task<BaseMessage<AudioBook>> GetAudioBookByAuthorFullName(string authorName, string authorLastName);
-    Task<BaseMessage<AudioBook>> GetAudioBookByAuthorCountry(string authorCountry);
-    Task<BaseMessage<AudioBook>> GetAudioBookByAuthorBirthDateRange(DateOnly startDate, DateOnly endDate);
+    Task<BaseMessage<AudioBook>> GetAudioBookByNarrator(int narratorId);
+    Task<BaseMessage<AudioBook>> GetAudioBookByNarratorName(string narratorName);
+    Task<BaseMessage<AudioBook>> GetAudioBookByNarratorLastName(string narratorLastName);
+    Task<BaseMessage<AudioBook>> GetAudioBookByNarratorFullName(string NarratorName, string narratorLastName);
+    Task<BaseMessage<AudioBook>> GetAudioBookByNarratorGenre(string genre);
 }
