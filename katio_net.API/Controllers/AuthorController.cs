@@ -59,6 +59,15 @@ namespace katio.API.Controllers
 
         #region Find By Author
 
+        // Trae un Autor por su Id
+        [HttpGet]
+        [Route("GetAuthorById")]
+        public async Task<IActionResult> GetAuthorById(int Id)
+        {
+            var author = await _authorService.GetAuthorById(Id);
+            return author != null ? Ok(author) : StatusCode(StatusCodes.Status404NotFound, author);
+        }
+
         // Trae un autor por su nombre
         [HttpGet]
         [Route("GetAuthorByName")]

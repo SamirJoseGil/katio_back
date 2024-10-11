@@ -31,6 +31,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+Migrations/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -397,3 +398,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 .DS_Store
+katio_net.API/appsettings.Development.json
+katio_net.API/appsettings.json

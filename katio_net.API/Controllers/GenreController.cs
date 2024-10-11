@@ -57,6 +57,14 @@ namespace katio.API.Controllers
         #region Find By Genre
 
         [HttpGet]
+        [Route("GetGenreById")]
+        public async Task<IActionResult> GetByGendreId(int Id)
+        {
+            var response = await _genreService.GetByGenreId(Id);
+            return response != null ? Ok(response) : StatusCode(StatusCodes.Status404NotFound, response);
+        }
+
+        [HttpGet]
         [Route("GetGenresByName")]
         public async Task<IActionResult> GetGenresByName(string Name)
         {

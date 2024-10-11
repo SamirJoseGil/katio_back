@@ -59,6 +59,15 @@ namespace katio.API.Controllers
 
         #region Find By Narrator
 
+        // Trae un narrador por su id
+        [HttpGet]
+        [Route("GetNarratorById")]
+        public async Task<IActionResult> GetNarratorById(int Id)
+        {
+            var response = await _narratorService.GetNarratorById(Id);
+            return response != null ? Ok(response) : StatusCode(StatusCodes.Status404NotFound, response);
+        }
+
         // Trae un narrador por su Nombre
         [HttpGet]
         [Route("GetNarratorByName")]

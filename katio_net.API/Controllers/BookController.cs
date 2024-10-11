@@ -2,6 +2,8 @@
 using katio.Business.Interfaces;
 using katio.Data.Models;
 
+
+
 namespace katio.API.Controllers
 {
     [ApiController]
@@ -22,7 +24,7 @@ namespace katio.API.Controllers
         public async Task<IActionResult> Index()
         {
             var response = await _bookService.Index();
-            return response.TotalElements > 0 ? Ok(response) : StatusCode(StatusCodes.Status404NotFound, response);
+            return response !=null ? Ok(response) : StatusCode(StatusCodes.Status404NotFound, response);
         }
 
         #region Create Update Delete
@@ -48,16 +50,24 @@ namespace katio.API.Controllers
         //Elimina un libro
         [HttpDelete]
         [Route("DeleteBook")]
-        public async Task<IActionResult> DeleteBook(int id)
+        public async Task<IActionResult> DeleteBook(int Id)
         {
-            var response = await _bookService.DeleteBook(id);
+            var response = await _bookService.DeleteBook(Id);
             return response.StatusCode == System.Net.HttpStatusCode.OK ? Ok(response) : StatusCode((int)response.StatusCode, response);
         }
-
 
         #endregion
 
         #region Find By Book
+
+        //Trae un libro por su Id
+        [HttpGet]
+        [Route("GetBookById")]
+        public async Task<IActionResult> GetBookById(int Id)
+        {
+            var response = await _bookService.GetBookById(Id);
+            return response != null ? Ok(response) : StatusCode(StatusCodes.Status404NotFound, response);
+        }
 
         //Trae un libro por su nombre
         [HttpGet]

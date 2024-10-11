@@ -1,7 +1,6 @@
-﻿using katio.Data.Models;
+﻿using System.Linq.Expressions;
+using katio.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-
 
 namespace katio.Data;
 
@@ -9,42 +8,70 @@ public class Repository<TId, TEntity> : IRepository<TId, TEntity>
 where TId : struct
 where TEntity : BaseEntity<TId>
 {
-    internal katioContext _context;
+    internal KatioContext _context;
     internal DbSet<TEntity> _dbSet;
 
-    public Repository(katioContext context)
+    public Repository(KatioContext context)
     {
         _context = context;
         _dbSet = context.Set<TEntity>();
     }
 
-    public async Task<TEntity> FindAsync(TId id)
+    public virtual async Task<TEntity> FindAsync(TId id)
     {
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task AddAsync(TEntity entity)
+    public virtual async Task AddAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        await _dbSet.AddAsync(entity);
     }
 
-    public async Task Update(TEntity entity)
+    public virtual async Task Delete(TEntity entity)
     {
-        throw new NotImplementedException();
+        if (_context.Entry(entity).State == EntityState.Detached)
+        {
+            _dbSet.Attach(entity);
+        }
+        _dbSet.Remove(entity);
+        await _context.SaveChangesAsync();
     }
 
-    public async Task Delete(TEntity entity)
+    public virtual async Task Delete(TId id)
     {
-        throw new NotImplementedException();
+        TEntity entityToDelete = await _dbSet.FindAsync(id);
+        Delete(entityToDelete);
     }
 
-    public async Task Delete(TId id)
+    public virtual async Task Update(TEntity entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Attach(entity);
+        _context.Entry(entity).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
     }
-    
-    public Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, Book>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null, string includeProperties = "")
+
+    public virtual async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null, string includeProperties = "")
     {
-        throw new NotImplementedException();
+        IQueryable<TEntity> query = _dbSet;
+        if (filter is not null)
+        {
+            query = query.Where(filter);
+        }
+
+        foreach (var includeProperty in includeProperties.Split(
+            new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            query = query.Include(includeProperty);
+        }
+
+        if (orderby is not null)
+        {
+            return await orderby(query).ToListAsync();
+        }
+        else
+        {
+            return await query.ToListAsync();
+        }
     }
+
 }

@@ -1,0 +1,6 @@
+dotnet tool install --global dotnet-ef
+cd .\katio_net.API\
+dotnet add package Npsql.EntityFrameworkCore.PostgraSQL
+
+APP SETINGS:
+

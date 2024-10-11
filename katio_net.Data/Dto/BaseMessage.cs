@@ -8,7 +8,7 @@ public class BaseMessage<T>
     public string Message { get; set; }
     public HttpStatusCode StatusCode { get; set; }
     public int TotalElements { get; set; }
-    public List<T> ResponseElements { get; set; }
+    public IEnumerable<T> ResponseElements { get; set; }
 }
 
 public static class BaseMessageStatus
@@ -20,5 +20,6 @@ public static class BaseMessageStatus
     public const string BOOK_NOT_FOUND = "404 Book Not Found";
     public const string AUTHOR_NOT_FOUND = "404 Author Not Found";
     public const string AUDIOBOOK_NOT_FOUND = "404 AudioBook Not Found";
+    public const string NARRATOR_NOT_FOUND = "404 Narrator Not Found";
     public const string GENRE_NOT_FOUND = "404 Genre Not Found";
 }
