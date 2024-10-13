@@ -32,7 +32,7 @@ public class AuthorTests
             new Author 
             {
                 Name = "Gabriel",
-                LastName = "Garc�a M�rquez",
+                LastName = "García Márquez",
                 Country = "Colombia",
                 BirthDate = new DateOnly(1940, 03, 03)
             },
@@ -47,7 +47,7 @@ public class AuthorTests
     }
 
 
-
+    #region Test Methods Simple
     // Test for getting all authors
     [TestMethod]
     public async Task GetAllAuthors() 
@@ -96,9 +96,9 @@ public class AuthorTests
         Assert.IsNotNull(result);
         Assert.AreEqual(author.Name, result.ResponseElements.First().Name);
     }
+    #endregion
 
-
-    // Repository Exeptions
+    #region Repository Exeptions
     // Test for getting all authors with repository exceptions
     [TestMethod]
     public async Task GetAllAuthorsRepositoryException()
@@ -147,4 +147,7 @@ public class AuthorTests
         Assert.IsNotNull(result);
         Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
     }
+    #endregion
+
+    #region Test Methods Fail
 }
