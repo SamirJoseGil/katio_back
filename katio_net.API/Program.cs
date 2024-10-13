@@ -2,18 +2,30 @@ using katio.Business.Services;
 using katio.Business.Interfaces;
 using katio.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Create DataBase
+// Conection to Database.
 builder.Services.AddDbContext<KatioContext>(
     opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("KatioDBPSQL")));
+
+// Configure CrossOrigin
+builder.Services.AddCors(Options => {
+    Options.AddPolicy(name: "katioRules", builder => {
+        builder.AllowAnyHeader();
+        builder.AllowAnyMethod();
+        builder.AllowAnyOrigin();
+    });
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+// Inject services to the container.
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<INarratorService, NarratorService>();
@@ -21,6 +33,7 @@ builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IAudioBookService, AudioBookService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Build app
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,13 +43,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//PopulateDB(app);
+
+// PopulateDB(app);
+
 
 app.UseHttpsRedirection();
-
 app.MapControllers();
+app.UseCors();
 
+// App run
 app.Run();
+
 
 // Datos de Base de Datos en Memoria
 #region PopulateDB
