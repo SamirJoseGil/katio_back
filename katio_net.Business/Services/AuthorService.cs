@@ -27,13 +27,12 @@ public class AuthorService : IAuthorService
             var result = await _unitOfWork.AuthorRepository.GetAllAsync();
             return result.Any() ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
-                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Author>());
+                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
     }
-
 
     #region Create Update Delete
 
@@ -59,7 +58,7 @@ public class AuthorService : IAuthorService
         {
             await _unitOfWork.AuthorRepository.AddAsync(newAuthor);
             await _unitOfWork.SaveAsync();
-        } 
+        }
         catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
@@ -129,7 +128,6 @@ public class AuthorService : IAuthorService
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
     }
-
     // Traer los autores por nombre
     public async Task<BaseMessage<Author>> GetAuthorsByName(string name)
     {
@@ -145,7 +143,6 @@ public class AuthorService : IAuthorService
         }
     }
     // Traer los autores por apellido
-    //este metodo
     public async Task<BaseMessage<Author>> GetAuthorsByLastName(string LastName)
     {
         try
