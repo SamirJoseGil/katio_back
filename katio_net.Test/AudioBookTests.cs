@@ -30,15 +30,15 @@ public class AudioBookTests
             new AudioBook
             {
                 Id = 1,
-                Name = "Cien a�os de soledad",
+                Name = "Cien años de soledad",
                 ISBN10 = "8420471836",
                 ISBN13 = "978-8420471839",
                 Published = new DateOnly(1967, 06, 05),
-                Edition = "RAE Obra Acad�mica",
+                Edition = "RAE Obra Académica",
                 Genre = "Ficcion",
                 LenghtInSeconds = 1,
                 Path = "C:/Users/Usuario/Downloads/Cien a�os de soledad.mp3",
-                AuthorId = 1
+                NarratorId = 1
             },
             new AudioBook
             {
@@ -51,7 +51,7 @@ public class AudioBookTests
                 Genre = "Ficcion",
                 LenghtInSeconds = 1,
                 Path = "C:/Users/Usuario/Downloads/Huellas.mp3",
-                AuthorId = 3
+                NarratorId = 3
             }
         };
     }
