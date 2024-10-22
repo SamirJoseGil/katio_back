@@ -3,14 +3,12 @@ using katio.Data.Models;
 using katio.Data.Dto;
 using katio.Data;
 using System.Net;
-using Microsoft.EntityFrameworkCore;
 
 namespace katio.Business.Services;
 
 public class AuthorService : IAuthorService
 {
     // Lista de autores
-
     private readonly IUnitOfWork _unitOfWork;
 
     // Constructor
@@ -27,7 +25,7 @@ public class AuthorService : IAuthorService
             var result = await _unitOfWork.AuthorRepository.GetAllAsync();
             return result.Any() ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
-                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Author>());
+                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
         }
         catch (Exception ex)
         {
@@ -45,33 +43,29 @@ public class AuthorService : IAuthorService
 
         if (existingAuthor.Any())
         {
-            return Utilities.BuildResponse<Author>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} | El autor ya está registrado en el sistema.");
+            return Utilities.BuildResponse<Author>(HttpStatusCode.Conflict, BaseMessageStatus.AUTHOR_ALREADY_EXISTS);
         }
-
-        var newAuthor = new Author()
-        {
-            Name = author.Name,
-            LastName = author.LastName,
-            Country = author.Country,
-            BirthDate = author.BirthDate
-        };
-
         try
         {
-            await _unitOfWork.AuthorRepository.AddAsync(newAuthor);
+            await _unitOfWork.AuthorRepository.AddAsync(author);
             await _unitOfWork.SaveAsync();
         }
         catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { newAuthor });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { author });
     }
 
     // Actualizar Autores
     public async Task<BaseMessage<Author>> UpdateAuthor(Author author)
-    {   
+    {
+        var existingAuthor = await _unitOfWork.AuthorRepository.GetAllAsync(a => a.Name == author.Name && a.LastName == author.LastName);
+
+        if (!existingAuthor.Any())
+        {
+            return Utilities.BuildResponse<Author>(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND);
+        }
         try
         {
             await _unitOfWork.AuthorRepository.Update(author);
@@ -87,21 +81,22 @@ public class AuthorService : IAuthorService
     // Eliminar Autores
     public async Task<BaseMessage<Author>> DeleteAuthor(int id)
     {
-        var result = await _unitOfWork.AuthorRepository.FindAsync(id);
-        if (result == null)
+        var existingAuthor = await _unitOfWork.AuthorRepository.GetAllAsync(a => a.Id == id);
+
+        if (!existingAuthor.Any())
         {
-            return Utilities.BuildResponse<Author>(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
+            return Utilities.BuildResponse<Author>(HttpStatusCode.Conflict, BaseMessageStatus.AUTHOR_NOT_FOUND);
         }
         try
         {
-            await _unitOfWork.AuthorRepository.Delete(result);
-
+            await _unitOfWork.AuthorRepository.Delete(id);
         }
         catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { result });
+
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { });
     }
 
     #endregion

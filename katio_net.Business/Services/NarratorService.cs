@@ -1,10 +1,8 @@
-﻿using katio.Data.Models;
+﻿using katio.Business.Interfaces;
+using katio.Data.Models;
 using katio.Data.Dto;
 using katio.Data;
 using System.Net;
-using Microsoft.EntityFrameworkCore;
-using katio.Business.Interfaces;
-
 
 namespace katio.Business.Services;
 
@@ -27,8 +25,9 @@ public class NarratorService : INarratorService
         {
             var result = await _unitOfWork.NarratorRepository.GetAllAsync();
             return result.Any() ? Utilities.BuildResponse<Narrator>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
-                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Narrator>());
-        } catch (Exception ex) 
+                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.NARRATOR_NOT_FOUND, new List<Narrator>());
+        } 
+        catch (Exception ex) 
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -43,68 +42,59 @@ public class NarratorService : INarratorService
 
         if (existingNarrator.Any())
         {
-            return Utilities.BuildResponse<Narrator>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} | El narrador ya está registrado en el sistema.");
+            return Utilities.BuildResponse<Narrator>(HttpStatusCode.Conflict, BaseMessageStatus.NARRATOR_ALREADY_EXISTS);
         }
-        var newNarrator = new Narrator()
-        {
-            Name = narrator.Name,
-            LastName = narrator.LastName,
-            Genre = narrator.Genre
-        };
         try
         {
-            await _unitOfWork.NarratorRepository.AddAsync(newNarrator);
+            await _unitOfWork.NarratorRepository.AddAsync(narrator);
             await _unitOfWork.SaveAsync();
-
-        } catch (Exception ex)
+        } 
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Narrator> { newNarrator });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Narrator> { narrator });
     }
-
 
     // Actualizar Narradores
     public async Task<BaseMessage<Narrator>> UpdateNarrator(Narrator narrator)
     {
-        var result= await _unitOfWork.NarratorRepository.FindAsync(narrator.Id);
-        if (result == null)
+        var existingNarrator = await _unitOfWork.NarratorRepository.GetAllAsync(n => n.Name == narrator.Name && n.LastName == narrator.LastName);
+
+        if (!existingNarrator.Any())
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.NotFound, BaseMessageStatus.NARRATOR_NOT_FOUND, new List<Narrator>());
         }
-        result.Name = narrator.Name;
-        result.LastName = narrator.LastName;
-        result.Genre = narrator.Genre;
-       
-    
         try 
         {
-            await _unitOfWork.NarratorRepository.AddAsync(result);
+            await _unitOfWork.NarratorRepository.AddAsync(narrator);
             await _unitOfWork.SaveAsync();
-
-        } catch (Exception ex)
+        } 
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Narrator> { result });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Narrator> { narrator });
     }
+
     // Eliminar Narradores
     public async Task<BaseMessage<Narrator>> DeleteNarrator(int id)
     {
-        var result = await _unitOfWork.NarratorRepository.FindAsync(id);
-        if (result == null)
+        var existingNarrator = await _unitOfWork.NarratorRepository.GetAllAsync(n => n.Id == id);
+        
+        if (existingNarrator.Any())
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.NotFound, BaseMessageStatus.NARRATOR_NOT_FOUND, new List<Narrator>());
         }
         try
         {
-            await _unitOfWork.NarratorRepository.Delete(result);
+            await _unitOfWork.NarratorRepository.Delete(id);
             
         } catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Narrator> { result });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Narrator> {  });
     }
     #endregion
 
@@ -117,8 +107,9 @@ public class NarratorService : INarratorService
             var result = await _unitOfWork.NarratorRepository.FindAsync(id);
             return result != null ? Utilities.BuildResponse<Narrator>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Narrator> { result }) :
-                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Narrator>());
-        } catch (Exception ex)
+                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.NARRATOR_NOT_FOUND, new List<Narrator>());
+        } 
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -134,7 +125,8 @@ public class NarratorService : INarratorService
             return result.Any() ? Utilities.BuildResponse<Narrator>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.NARRATOR_NOT_FOUND, new List<Narrator>());
-        } catch (Exception ex)
+        } 
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -148,8 +140,9 @@ public class NarratorService : INarratorService
             var result = await _unitOfWork.NarratorRepository.GetAllAsync(b => b.LastName.ToLower().Contains(lastName.ToLower()));
             return result.Any()
                 ? Utilities.BuildResponse<Narrator>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result)
-                : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Narrator>());
-        } catch (Exception ex)
+                : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.NARRATOR_NOT_FOUND, new List<Narrator>());
+        } 
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -163,8 +156,9 @@ public class NarratorService : INarratorService
             var result = await _unitOfWork.NarratorRepository.GetAllAsync(b => b.Genre.ToLower().Contains(genre.ToLower()));
             return result.Any()
                 ? Utilities.BuildResponse<Narrator>(HttpStatusCode.OK, BaseMessageStatus.OK_200, result)
-                : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Narrator>());
-        } catch (Exception ex)
+                : Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.NARRATOR_NOT_FOUND, new List<Narrator>());
+        } 
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Narrator>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }

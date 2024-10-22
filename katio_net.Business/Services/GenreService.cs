@@ -26,7 +26,8 @@ public class GenreService : IGenreService
             return result.Any() ? Utilities.BuildResponse<Genre>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.GENRE_NOT_FOUND, new List<Genre>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -41,65 +42,60 @@ public class GenreService : IGenreService
 
         if (existingGenre.Any())
         {
-            return Utilities.BuildResponse<Genre>(HttpStatusCode.Conflict, $"{BaseMessageStatus.BAD_REQUEST_400} | El género ya está registrado en el sistema.");
+            return Utilities.BuildResponse<Genre>(HttpStatusCode.Conflict, BaseMessageStatus.GENRE_ALREADY_EXISTS);
         }
-        var newGenre = new Genre()
-        {
-            Name = genre.Name,
-            Description = genre.Description
-        };
         try
         {
-            await _unitOfWork.GenreRepository.AddAsync(newGenre);
+            await _unitOfWork.GenreRepository.AddAsync(genre);
             await _unitOfWork.SaveAsync();
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Genre> { newGenre });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Genre> { genre });
     }
 
     // Actualizar géneros
     public async Task<BaseMessage<Genre>> UpdateGenre(Genre genre)
     {
-        var result = await _unitOfWork.GenreRepository.FindAsync(genre.Id);
-        if (result == null)
+        var existingGenre = await _unitOfWork.GenreRepository.GetAllAsync(g => g.Name == genre.Name);
+
+        if (!existingGenre.Any())
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.NotFound, BaseMessageStatus.GENRE_NOT_FOUND);
         }
-        
-        result.Name = genre.Name;
-        result.Description = genre.Description;
-
         try
         {
-            await _unitOfWork.GenreRepository.Update(result);
+            await _unitOfWork.GenreRepository.Update(genre);
             await _unitOfWork.SaveAsync();
-            
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
 
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Genre> { result });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Genre> { genre });
     }
 
     // Eliminar géneros
     public async Task<BaseMessage<Genre>> DeleteGenre(int id)
     {
-        var result = await _unitOfWork.GenreRepository.FindAsync(id);
-        if (result == null)
+        var existingGenre = await _unitOfWork.GenreRepository.GetAllAsync(g => g.Id == id);
+
+        if (!existingGenre.Any())
         {
-            return Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.GENRE_NOT_FOUND, new List<Genre>());
+            return Utilities.BuildResponse<Genre>(HttpStatusCode.NotFound, BaseMessageStatus.GENRE_NOT_FOUND);
         }
         try
         {
-            await _unitOfWork.GenreRepository.Delete(result);
-        } catch (Exception ex)
+            await _unitOfWork.GenreRepository.Delete(id);
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Genre> { result });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Genre> { });
     }
 
     #endregion
@@ -114,7 +110,8 @@ public class GenreService : IGenreService
             return result != null ? Utilities.BuildResponse<Genre>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Genre> { result }) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.GENRE_NOT_FOUND, new List<Genre>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -128,8 +125,9 @@ public class GenreService : IGenreService
             var result = await _unitOfWork.GenreRepository.GetAllAsync(b => b.Name.ToLower().Contains(name.ToLower()));
             return result.Any() ? Utilities.BuildResponse<Genre>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
-                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Genre>());
-        } catch (Exception ex)
+                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.GENRE_NOT_FOUND, new List<Genre>());
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -142,8 +140,9 @@ public class GenreService : IGenreService
             var result = await _unitOfWork.GenreRepository.GetAllAsync(b => b.Description.ToLower().Contains(description.ToLower()));
             return result.Any() ? Utilities.BuildResponse<Genre>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
-                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Genre>());
-        } catch (Exception ex)
+                Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.GENRE_NOT_FOUND, new List<Genre>());
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Genre>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
