@@ -28,7 +28,8 @@ public class AuthorService : IAuthorService
             return result.Any() ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.BOOK_NOT_FOUND, new List<Author>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -59,7 +60,7 @@ public class AuthorService : IAuthorService
         {
             await _unitOfWork.AuthorRepository.AddAsync(newAuthor);
             await _unitOfWork.SaveAsync();
-        } 
+        }
         catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
@@ -70,27 +71,17 @@ public class AuthorService : IAuthorService
 
     // Actualizar Autores
     public async Task<BaseMessage<Author>> UpdateAuthor(Author author)
-    {
-        var result = await _unitOfWork.AuthorRepository.FindAsync(author.Id);
-        if (result == null)
+    {   
+        try
         {
-            return Utilities.BuildResponse<Author>(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
-        }
-        result.Name = author.Name;
-        result.LastName = author.LastName;
-        result.Country = author.Country;
-        result.BirthDate = author.BirthDate;
-        await _unitOfWork.SaveAsync();
-        try 
-        {
-            await _unitOfWork.AuthorRepository.Update(result);
+            await _unitOfWork.AuthorRepository.Update(author);
             await _unitOfWork.SaveAsync();
-            
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
-        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { result });
+        return Utilities.BuildResponse(HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { author });
     }
 
     // Eliminar Autores
@@ -105,7 +96,8 @@ public class AuthorService : IAuthorService
         {
             await _unitOfWork.AuthorRepository.Delete(result);
 
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -124,7 +116,8 @@ public class AuthorService : IAuthorService
             return author != null ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, new List<Author> { author }) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -139,7 +132,8 @@ public class AuthorService : IAuthorService
             return result.Any() ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -154,7 +148,8 @@ public class AuthorService : IAuthorService
             return result.Any() ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -168,7 +163,8 @@ public class AuthorService : IAuthorService
             return result.Any() ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
@@ -182,7 +178,8 @@ public class AuthorService : IAuthorService
             return result.Any() ? Utilities.BuildResponse<Author>
                 (HttpStatusCode.OK, BaseMessageStatus.OK_200, result) :
                 Utilities.BuildResponse(HttpStatusCode.NotFound, BaseMessageStatus.AUTHOR_NOT_FOUND, new List<Author>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return Utilities.BuildResponse<Author>(HttpStatusCode.InternalServerError, $"{BaseMessageStatus.INTERNAL_SERVER_ERROR_500} | {ex.Message}");
         }
