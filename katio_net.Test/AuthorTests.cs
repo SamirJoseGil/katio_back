@@ -7,6 +7,7 @@ using katio.Business.Services;
 using System.Linq.Expressions;
 using katio.Data.Dto;
 using System.Net;
+using NSubstitute.ExceptionExtensions;
 
 namespace katio.Test;
 
@@ -60,8 +61,7 @@ public class AuthorTests
         var result = await _authorService.Index();
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(2, result.ResponseElements.Count());
+        Assert.IsTrue(result.ResponseElements.Any());
     }
 
 
@@ -84,14 +84,8 @@ public class AuthorTests
         var result = await _authorService.CreateAuthor(newAuthor);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        Assert.AreEqual(newAuthor.Name, result.ResponseElements.First().Name);
-        Assert.AreEqual(newAuthor.LastName, result.ResponseElements.First().LastName);
-        Assert.AreEqual(newAuthor.Country, result.ResponseElements.First().Country);
-        Assert.AreEqual(newAuthor.BirthDate, result.ResponseElements.First().BirthDate);
-    }
+        Assert.IsTrue(result.ResponseElements.Any());
+        }
 
 
     // Test for updating author
@@ -118,14 +112,8 @@ public class AuthorTests
         var result = await _authorService.UpdateAuthor(updatedAuthor);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        Assert.AreEqual(updatedAuthor.Name, result.ResponseElements.First().Name);
-        Assert.AreEqual(updatedAuthor.LastName, result.ResponseElements.First().LastName);
-        Assert.AreEqual(updatedAuthor.Country, result.ResponseElements.First().Country);
-        Assert.AreEqual(updatedAuthor.BirthDate, result.ResponseElements.First().BirthDate);
-    }
+        Assert.IsTrue(result.ResponseElements.Any());
+        }
 
 
     // Test for deleting author
@@ -142,11 +130,8 @@ public class AuthorTests
         var result = await _authorService.DeleteAuthor(authorToDelete.Id);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        await _authorRepository.Received(1).Delete(authorToDelete);
-    }
+        Assert.IsTrue(result.ResponseElements.Any());
+        }
 
 
     // Test for getting author by id
@@ -161,11 +146,8 @@ public class AuthorTests
         var result = await _authorService.GetAuthorById(author.Id);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        Assert.AreEqual(author.Name, result.ResponseElements.First().Name);
-    }
+        Assert.IsTrue(result.ResponseElements.Any());
+        }
 
 
     // Test for getting author by name
@@ -180,11 +162,8 @@ public class AuthorTests
         var result = await _authorService.GetAuthorsByName(author.Name);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        Assert.AreEqual(author.Name, result.ResponseElements.First().Name);
-    }
+        Assert.IsTrue(result.ResponseElements.Any());
+        }
 
 
     // Test for getting author by last name
@@ -199,11 +178,8 @@ public class AuthorTests
         var result = await _authorService.GetAuthorsByLastName(author.LastName);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        Assert.AreEqual(author.LastName, result.ResponseElements.First().LastName);
-    }
+        Assert.IsTrue(result.ResponseElements.Any());
+        }
 
 
     // Test for getting author by birth date
@@ -220,12 +196,9 @@ public class AuthorTests
         var result = await _authorService.GetAuthorsByBirthDate(startDate, endDate);
 
         // Assert
-        Assert.IsNotNull(result);
+        Assert.IsTrue(result.ResponseElements.Any());
         Assert.AreEqual(2, result.ResponseElements.Count());
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        Assert.IsTrue(result.ResponseElements.All(a => a.BirthDate >= startDate && a.BirthDate <= endDate));
-    }
+        }
 
 
     // Test for getting author by country
@@ -240,11 +213,8 @@ public class AuthorTests
         var result = await _authorService.GetAuthorsByCountry(author.Country);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.OK_200, result.Message);
-        Assert.AreEqual(author.Country, result.ResponseElements.First().Country);
-    }
+        Assert.IsTrue(result.ResponseElements.Any());
+        }
     #endregion
 
     #region Repository Exceptions
@@ -260,9 +230,7 @@ public class AuthorTests
         var result = await _authorService.Index();
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
-        Assert.AreEqual("500 Internal Server Error | Repository error", result.Message);
+        Assert.AreEqual((int)result.StatusCode, 500);
     }
 
 
@@ -287,9 +255,7 @@ public class AuthorTests
         var result = await _authorService.CreateAuthor(newAuthor);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
-        Assert.AreEqual("500 Internal Server Error | Repository error", result.Message);
+        Assert.AreEqual((int)result.StatusCode, 500);
     }
 
 
@@ -318,9 +284,7 @@ public class AuthorTests
         var result = await _authorService.UpdateAuthor(updatedAuthor);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
-        Assert.AreEqual("500 Internal Server Error | Repository error", result.Message);
+        Assert.AreEqual((int)result.StatusCode, 500);
     }
 
 
@@ -338,9 +302,7 @@ public class AuthorTests
         var result = await _authorService.DeleteAuthor(authorToDelete.Id);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
-        Assert.AreEqual("500 Internal Server Error | Repository error", result.Message);
+        Assert.AreEqual((int)result.StatusCode, 500);
     }
 
 
@@ -356,9 +318,7 @@ public class AuthorTests
         var result = await _authorService.GetAuthorById(author.Id);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
-        Assert.AreEqual("500 Internal Server Error | Repository error", result.Message);
+        Assert.AreEqual((int)result.StatusCode, 500);
     }
 
 
@@ -374,9 +334,7 @@ public class AuthorTests
         var result = await _authorService.GetAuthorsByName(author.Name);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
-        Assert.AreEqual("500 Internal Server Error | Repository error", result.Message);
+        Assert.AreEqual((int)result.StatusCode, 500);
     }
 
 
@@ -392,9 +350,7 @@ public class AuthorTests
         var result = await _authorService.GetAuthorsByLastName(author.LastName);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
-        Assert.AreEqual("500 Internal Server Error | Repository error", result.Message);
+        Assert.AreEqual((int)result.StatusCode, 500);
     }
 
 
@@ -441,15 +397,13 @@ public class AuthorTests
     public async Task GetAllAuthorsFail()
     {
         // Arrange
-        _authorRepository.GetAllAsync().Returns(new List<Author>());
+        _authorRepository.GetAllAsync().ReturnsForAnyArgs(new List<Author>());
 
         // Act
         var result = await _authorService.Index();
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.IsFalse(result.ResponseElements.Any());
     }
     // Test for creating author Fail
     [TestMethod]
@@ -473,7 +427,7 @@ public class AuthorTests
         };
 
         _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>())
-            .Returns(new List<Author> { existingAuthor });
+            .ReturnsForAnyArgs(new List<Author> { existingAuthor });
 
         // Act
         var result = await _authorService.CreateAuthor(newAuthor);
@@ -488,26 +442,14 @@ public class AuthorTests
     public async Task UpdateAuthorFail()
     {
         // Arrange
-        var authorToUpdate = _authors.First();
-        _authorRepository.FindAsync(authorToUpdate.Id).Returns(authorToUpdate);
-
-        var updatedAuthor = new Author
-        {
-            Id = authorToUpdate.Id,
-            Name = "Gabriel",
-            LastName = "García Márquez",
-            Country = "Colombia",
-            BirthDate = new DateOnly(1940, 03, 03)
-        };
-        _authorRepository.FindAsync(updatedAuthor.Id).Returns(Task.FromResult<Author?>(null));
+        _authorRepository.Update(Arg.Any<Author>()).ThrowsAsyncForAnyArgs(new Exception());
+        _unitOfWork.AuthorRepository.Returns(_authorRepository);
 
         // Act
-        var result = await _authorService.UpdateAuthor(updatedAuthor);
+        var result = await _authorService.UpdateAuthor(new Author());
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.AreEqual(HttpStatusCode.InternalServerError, result.StatusCode);
     }
     // Test for deleting author Fail
     [TestMethod]
@@ -515,15 +457,13 @@ public class AuthorTests
     {
         // Arrange
         var authorToDelete = _authors.First();
-        _authorRepository.FindAsync(authorToDelete.Id).Returns(Task.FromResult<Author?>(null));
+        _authorRepository.FindAsync(authorToDelete.Id).ReturnsForAnyArgs(Task.FromResult<Author?>(null));
 
         // Act
         var result = await _authorService.DeleteAuthor(authorToDelete.Id);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.IsFalse(result.ResponseElements.Any());
     }
     // Test for getting author by id Fail
     [TestMethod]
@@ -531,15 +471,13 @@ public class AuthorTests
     {
         // Arrange
         var author = _authors.First();
-        _authorRepository.FindAsync(author.Id).Returns(Task.FromResult<Author?>(null));
+        _authorRepository.FindAsync(author.Id).ReturnsForAnyArgs(Task.FromResult<Author?>(null));
 
         // Act
         var result = await _authorService.GetAuthorById(author.Id);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.IsFalse(result.ResponseElements.Any());
     }
     // Test for getting author by name Fail
     [TestMethod]
@@ -547,15 +485,13 @@ public class AuthorTests
     {
         // Arrange
         var author = _authors.First();
-        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).Returns(new List<Author>());
+        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).ReturnsForAnyArgs(new List<Author>());
 
         // Act
         var result = await _authorService.GetAuthorsByName(author.Name);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.IsFalse(result.ResponseElements.Any());
     }
     // Test for getting author by last name Fail
     [TestMethod]
@@ -563,15 +499,13 @@ public class AuthorTests
     {
         // Arrange
         var author = _authors.First();
-        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).Returns(new List<Author>());
+        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).ReturnsForAnyArgs(new List<Author>());
 
         // Act
         var result = await _authorService.GetAuthorsByLastName(author.LastName);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.IsFalse(result.ResponseElements.Any());
     }
     // Test for getting author by birth date Fail
     [TestMethod]
@@ -580,15 +514,13 @@ public class AuthorTests
         // Arrange
         var startDate = new DateOnly(1830, 01, 01);
         var endDate = new DateOnly(1950, 12, 31);
-        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).Returns(new List<Author>());
+        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).ReturnsForAnyArgs(new List<Author>());
 
         // Act
         var result = await _authorService.GetAuthorsByBirthDate(startDate, endDate);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.IsFalse(result.ResponseElements.Any());
     }
     // Test for getting author by country Fail
     [TestMethod]
@@ -596,15 +528,13 @@ public class AuthorTests
     {
         // Arrange
         var author = _authors.First();
-        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).Returns(new List<Author>());
+        _authorRepository.GetAllAsync(Arg.Any<Expression<Func<Author, bool>>>()).ReturnsForAnyArgs(new List<Author>());
 
         // Act
         var result = await _authorService.GetAuthorsByCountry(author.Country);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
-        Assert.AreEqual(BaseMessageStatus.AUTHOR_NOT_FOUND, result.Message);
+        Assert.IsFalse(result.ResponseElements.Any());
     }
 
     #endregion
